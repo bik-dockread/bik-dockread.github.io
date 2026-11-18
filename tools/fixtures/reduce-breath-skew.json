@@ -1,0 +1,196 @@
+{
+ "name": "breath drops from a phone whose clock runs slow: a drop that sorts before its keep still holds (notch and call); an undropped breath stays hung",
+ "now": "2026-11-04T12:00:00.000Z",
+ "homeSeries": {},
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000000701",
+   "dev": "PHONE A",
+   "at": "2026-11-03T14:00:00.000Z",
+   "tz": -300,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000071",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000702",
+   "dev": "PHONE A",
+   "at": "2026-11-03T15:00:00.000Z",
+   "tz": -300,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000071",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000071",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000703",
+   "dev": "PHONE A",
+   "at": "2026-11-03T15:00:05.000Z",
+   "tz": -300,
+   "type": "breath.kept",
+   "round": "11111111-0000-4000-8000-000000000071",
+   "data": {
+    "b": "bbbbbbbb-0000-4000-8000-000000000071",
+    "of": "notch",
+    "ref": "aaaaaaaa-0000-4000-8000-000000000071",
+    "ms": 2400,
+    "mime": "audio/webm"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000704",
+   "dev": "PHONE B",
+   "at": "2026-11-03T14:58:00.000Z",
+   "tz": -300,
+   "type": "breath.dropped",
+   "round": "11111111-0000-4000-8000-000000000071",
+   "data": {
+    "b": "bbbbbbbb-0000-4000-8000-000000000071"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000705",
+   "dev": "PHONE A",
+   "at": "2026-11-03T16:00:00.000Z",
+   "tz": -300,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000071",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000072",
+    "up": false,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000706",
+   "dev": "PHONE A",
+   "at": "2026-11-03T16:00:05.000Z",
+   "tz": -300,
+   "type": "breath.kept",
+   "round": "11111111-0000-4000-8000-000000000071",
+   "data": {
+    "b": "bbbbbbbb-0000-4000-8000-000000000073",
+    "of": "notch",
+    "ref": "aaaaaaaa-0000-4000-8000-000000000072",
+    "ms": 1800,
+    "mime": "audio/mp4"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000707",
+   "dev": "PHONE A",
+   "at": "2026-11-03T17:00:00.000Z",
+   "tz": -300,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000071",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000071",
+    "lane": "macro",
+    "series": "ism_new_orders",
+    "from": null,
+    "up": true,
+    "docks": {
+     "u": 1,
+     "n": 2
+    },
+    "inside": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000708",
+   "dev": "PHONE A",
+   "at": "2026-11-03T17:00:05.000Z",
+   "tz": -300,
+   "type": "breath.kept",
+   "round": "11111111-0000-4000-8000-000000000071",
+   "data": {
+    "b": "bbbbbbbb-0000-4000-8000-000000000072",
+    "of": "call",
+    "ref": "cccccccc-0000-4000-8000-000000000071",
+    "ms": 5000,
+    "mime": "audio/webm"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000709",
+   "dev": "PHONE B",
+   "at": "2026-11-03T16:50:00.000Z",
+   "tz": -300,
+   "type": "breath.dropped",
+   "round": null,
+   "data": {
+    "b": "bbbbbbbb-0000-4000-8000-000000000072"
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 1,
+   "docks": 2,
+   "calls": 1
+  },
+  "state": {
+   "active": {
+    "n": 2,
+    "u": 1,
+    "notches": [
+     {
+      "n": "aaaaaaaa-0000-4000-8000-000000000071",
+      "breath": null
+     },
+     {
+      "n": "aaaaaaaa-0000-4000-8000-000000000072",
+      "breath": "bbbbbbbb-0000-4000-8000-000000000073"
+     }
+    ],
+    "call": {
+     "c": "cccccccc-0000-4000-8000-000000000071",
+     "why": null
+    }
+   },
+   "breaths": {
+    "bbbbbbbb-0000-4000-8000-000000000071": {
+     "of": "notch",
+     "ref": "aaaaaaaa-0000-4000-8000-000000000071",
+     "round": "11111111-0000-4000-8000-000000000071",
+     "dropped": true
+    },
+    "bbbbbbbb-0000-4000-8000-000000000072": {
+     "of": "call",
+     "ref": "cccccccc-0000-4000-8000-000000000071",
+     "round": "11111111-0000-4000-8000-000000000071",
+     "dropped": true
+    },
+    "bbbbbbbb-0000-4000-8000-000000000073": {
+     "of": "notch",
+     "ref": "aaaaaaaa-0000-4000-8000-000000000072",
+     "round": "11111111-0000-4000-8000-000000000071",
+     "dropped": false
+    }
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

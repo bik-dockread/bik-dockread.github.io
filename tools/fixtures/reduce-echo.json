@@ -1,0 +1,114 @@
+{
+ "name": "an echoed event: the same id twice, once as the phone wrote it (dev \"\") and once back from home (dev set); one notch, home's copy wins",
+ "now": "2026-10-02T12:00:00.000Z",
+ "homeSeries": {},
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000001401",
+   "dev": "",
+   "at": "2026-10-01T14:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001402",
+   "dev": "",
+   "at": "2026-10-01T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001401",
+   "dev": "",
+   "at": "2026-10-01T14:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001402",
+   "dev": "PHONE-A",
+   "at": "2026-10-01T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 1,
+   "docks": 1,
+   "calls": 0
+  },
+  "state": {
+   "rounds": [
+    {
+     "id": "11111111-0000-4000-8000-000000000001"
+    }
+   ],
+   "active": {
+    "n": 1,
+    "u": 1,
+    "notches": [
+     {
+      "n": "aaaaaaaa-0000-4000-8000-000000000001",
+      "dev": "PHONE-A"
+     }
+    ]
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

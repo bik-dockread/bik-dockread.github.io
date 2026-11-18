@@ -1,0 +1,204 @@
+{
+ "name": "a by-hand print for the awaited month names a round that already closed (SPEC 15.12): it lands in hand and prints, the call shows a pending grade, and the round stays closed on the print it closed on",
+ "now": "2026-12-02T16:00:00.000Z",
+ "homeSeries": {
+  "ism_new_orders": {
+   "prints": [
+    {
+     "period": "2026-10",
+     "label": "OCT 2026",
+     "value": 50,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "2026-11-02",
+     "fetched_at": "2026-11-02T10:05:00-05:00"
+    }
+   ]
+  }
+ },
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000000601",
+   "dev": "",
+   "at": "2026-10-05T14:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "2026-09",
+     "period": "2026-10",
+     "label": "OCT 2026",
+     "date": "2026-11-02",
+     "time_et": "10:00",
+     "conf": "rule"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000602",
+   "dev": "",
+   "at": "2026-10-06T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000603",
+   "dev": "",
+   "at": "2026-11-03T15:00:00.000Z",
+   "tz": -300,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000001",
+    "lane": "macro",
+    "series": "ism_new_orders",
+    "from": {
+     "period": "2026-10",
+     "label": "OCT 2026",
+     "value": 50,
+     "by": "fetch"
+    },
+    "up": true,
+    "docks": {
+     "u": 1,
+     "n": 1
+    },
+    "inside": false
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000604",
+   "dev": "",
+   "at": "2026-11-03T15:03:00.000Z",
+   "tz": -300,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "reason": "print",
+    "print": {
+     "series": "ism_new_orders",
+     "period": "2026-10",
+     "label": "OCT 2026",
+     "value": 50,
+     "by": "fetch"
+    }
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000605",
+   "dev": "",
+   "at": "2026-12-02T15:00:00.000Z",
+   "tz": -300,
+   "type": "print.hand",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "series": "ism_new_orders",
+    "period": "2026-11",
+    "label": "NOV 2026",
+    "value": 52
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 1,
+   "docks": 1,
+   "calls": 1
+  },
+  "state": {
+   "active": null,
+   "lastClosed": "2026-11-03T15:03:00.000Z",
+   "rounds": [
+    {
+     "id": "11111111-0000-4000-8000-000000000001",
+     "closed": true,
+     "closedAt": "2026-11-03T15:03:00.000Z",
+     "shadow": false,
+     "n": 1,
+     "u": 1,
+     "call": {
+      "c": "cccccccc-0000-4000-8000-000000000001",
+      "grade": null,
+      "graded": null,
+      "pending": {
+       "grade": 1,
+       "print": {
+        "period": "2026-11",
+        "label": "NOV 2026",
+        "value": 52
+       },
+       "base": {
+        "period": "2026-10",
+        "label": "OCT 2026",
+        "value": 50
+       }
+      }
+     }
+    }
+   ],
+   "tacks": [
+    {
+     "round": "11111111-0000-4000-8000-000000000001",
+     "c": "cccccccc-0000-4000-8000-000000000001",
+     "up": true,
+     "grade": null,
+     "graded": null
+    }
+   ],
+   "hand": {
+    "ism_new_orders": [
+     {
+      "period": "2026-11",
+      "label": "NOV 2026",
+      "value": 52,
+      "by": "hand",
+      "at": "2026-12-02T15:00:00.000Z"
+     }
+    ]
+   },
+   "prints": {
+    "ism_new_orders": [
+     {
+      "period": "2026-10",
+      "value": 50,
+      "by": "fetch"
+     },
+     {
+      "period": "2026-11",
+      "value": 52,
+      "by": "hand",
+      "source": "BY HAND"
+     }
+    ]
+   }
+  },
+  "calc": {
+   "round": "11111111-0000-4000-8000-000000000001",
+   "closing": {
+    "series": "ism_new_orders",
+    "period": "2026-10",
+    "value": 50,
+    "by": "fetch"
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

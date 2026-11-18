@@ -1,0 +1,100 @@
+{
+ "name": "a round.closed from a phone whose clock runs slow sorts before its round.opened: it still closes that round, so the next opening is active, not a shadow (a call the spec left open)",
+ "now": "2026-10-02T12:00:00.000Z",
+ "homeSeries": {},
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000001701",
+   "dev": "PHONE-A",
+   "at": "2026-10-01T10:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001702",
+   "dev": "PHONE-B",
+   "at": "2026-10-01T09:58:00.000Z",
+   "tz": -240,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "reason": "print",
+    "print": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001703",
+   "dev": "PHONE-A",
+   "at": "2026-10-01T10:30:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000002",
+   "data": {
+    "lane": "ai",
+    "q": "ANYBODY HERE USING AI FOR REAL?",
+    "say": "anybody here using A.I. for real?",
+    "words": [
+     "YES",
+     "NO"
+    ],
+    "twin": "btos_ai_use",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 2,
+   "docks": 0,
+   "calls": 0
+  },
+  "state": {
+   "rounds": [
+    {
+     "id": "11111111-0000-4000-8000-000000000001",
+     "closed": true,
+     "closedAt": "2026-10-01T09:58:00.000Z"
+    },
+    {
+     "id": "11111111-0000-4000-8000-000000000002",
+     "shadow": false,
+     "closed": false
+    }
+   ],
+   "active": {
+    "id": "11111111-0000-4000-8000-000000000002"
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

@@ -1,0 +1,302 @@
+{
+ "name": "a grade frozen by call.graded that a later revision (51.2 -> 47.0) must not move; only the first call per round counts",
+ "now": "2026-09-10T12:00:00.000Z",
+ "homeSeries": {
+  "ism_new_orders": {
+   "prints": [
+    {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    },
+    {
+     "period": "2026-08",
+     "label": "AUG 2026",
+     "value": 47,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    }
+   ]
+  }
+ },
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000000401",
+   "dev": "",
+   "at": "2026-08-01T13:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "2026-06",
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "date": "2026-08-03",
+     "time_et": "10:00",
+     "conf": "rule"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000402",
+   "dev": "",
+   "at": "2026-08-01T14:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000403",
+   "dev": "",
+   "at": "2026-08-03T15:00:00.000Z",
+   "tz": -240,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000001",
+    "lane": "macro",
+    "series": "ism_new_orders",
+    "from": {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48,
+     "by": "fetch"
+    },
+    "up": true,
+    "docks": {
+     "u": 1,
+     "n": 1
+    },
+    "inside": false
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000404",
+   "dev": "",
+   "at": "2026-08-03T15:00:09.000Z",
+   "tz": -240,
+   "type": "breath.kept",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "b": "bbbbbbbb-0000-4000-8000-000000000001",
+    "of": "call",
+    "ref": "cccccccc-0000-4000-8000-000000000001",
+    "ms": 2400,
+    "mime": "audio/webm"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000405",
+   "dev": "",
+   "at": "2026-08-03T15:01:00.000Z",
+   "tz": -240,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000002",
+    "lane": "macro",
+    "series": "ism_new_orders",
+    "from": {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48,
+     "by": "fetch"
+    },
+    "up": false,
+    "docks": {
+     "u": 1,
+     "n": 1
+    },
+    "inside": false
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000406",
+   "dev": "",
+   "at": "2026-08-03T15:01:09.000Z",
+   "tz": -240,
+   "type": "breath.kept",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "b": "bbbbbbbb-0000-4000-8000-000000000002",
+    "of": "call",
+    "ref": "cccccccc-0000-4000-8000-000000000002",
+    "ms": 2400,
+    "mime": "audio/webm"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000407",
+   "dev": "",
+   "at": "2026-08-03T15:02:00.000Z",
+   "tz": -240,
+   "type": "call.move",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000001",
+    "move": "money"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000408",
+   "dev": "",
+   "at": "2026-08-03T15:02:30.000Z",
+   "tz": -240,
+   "type": "call.move",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000001",
+    "move": "help"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000409",
+   "dev": "",
+   "at": "2026-08-03T15:02:40.000Z",
+   "tz": -240,
+   "type": "call.move",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000002",
+    "move": "position"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000410",
+   "dev": "",
+   "at": "2026-08-03T15:03:00.000Z",
+   "tz": -240,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "reason": "print",
+    "print": {
+     "series": "ism_new_orders",
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48,
+     "by": "fetch"
+    }
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000411",
+   "dev": "",
+   "at": "2026-09-01T15:00:00.000Z",
+   "tz": -240,
+   "type": "call.graded",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000001",
+    "grade": 1,
+    "print": {
+     "period": "2026-08",
+     "label": "AUG 2026",
+     "value": 51.2
+    },
+    "base": {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48
+    }
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000412",
+   "dev": "",
+   "at": "2026-09-02T15:00:00.000Z",
+   "tz": -240,
+   "type": "call.graded",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000001",
+    "grade": 0,
+    "print": {
+     "period": "2026-08",
+     "label": "AUG 2026",
+     "value": 47
+    },
+    "base": {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48
+    }
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 1,
+   "docks": 1,
+   "calls": 2
+  },
+  "state": {
+   "rounds": [
+    {
+     "id": "11111111-0000-4000-8000-000000000001",
+     "call": {
+      "c": "cccccccc-0000-4000-8000-000000000001",
+      "up": true,
+      "move": "money",
+      "why": "bbbbbbbb-0000-4000-8000-000000000001",
+      "grade": 1,
+      "graded": {
+       "grade": 1,
+       "print": {
+        "value": 51.2
+       },
+       "at": "2026-09-01T15:00:00.000Z"
+      },
+      "pending": null
+     }
+    }
+   ],
+   "tacks": [
+    {
+     "round": "11111111-0000-4000-8000-000000000001",
+     "c": "cccccccc-0000-4000-8000-000000000001",
+     "up": true,
+     "grade": 1,
+     "graded": {
+      "grade": 1
+     }
+    }
+   ],
+   "breaths": {
+    "bbbbbbbb-0000-4000-8000-000000000001": {
+     "of": "call",
+     "ref": "cccccccc-0000-4000-8000-000000000001",
+     "dropped": false
+    }
+   }
+  },
+  "absent": [
+   "breaths.bbbbbbbb-0000-4000-8000-000000000002"
+  ]
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

@@ -1,0 +1,175 @@
+{
+ "name": "one round, four cuts, a flip, a pull, a town, a breath",
+ "now": "2026-11-18T15:00:00.000Z",
+ "homeSeries": {},
+ "events": [
+  {
+   "id": "00000001-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-17T14:00:00.000Z",
+   "tz": -300,
+   "type": "round.opened",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "2026-09",
+     "period": "2026-11",
+     "label": "NOV 2026",
+     "date": "2026-12-01",
+     "time_et": "10:00",
+     "conf": "rule"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000002-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-17T15:10:00.000Z",
+   "tz": -300,
+   "type": "notch.cut",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "n": "00000001-1111-4111-8111-111111111111",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000003-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-17T15:10:05.000Z",
+   "tz": -300,
+   "type": "notch.place",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "n": "00000001-1111-4111-8111-111111111111",
+    "city": "JOLIET",
+    "st": "IL"
+   }
+  },
+  {
+   "id": "00000004-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-17T15:10:09.000Z",
+   "tz": -300,
+   "type": "breath.kept",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "b": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    "of": "notch",
+    "ref": "00000001-1111-4111-8111-111111111111",
+    "ms": 2400,
+    "mime": "audio/webm"
+   }
+  },
+  {
+   "id": "00000005-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-17T18:30:00.000Z",
+   "tz": -300,
+   "type": "notch.cut",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "n": "00000002-1111-4111-8111-111111111111",
+    "up": false,
+    "place": null
+   }
+  },
+  {
+   "id": "00000006-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-17T18:30:20.000Z",
+   "tz": -300,
+   "type": "notch.flip",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "n": "00000002-1111-4111-8111-111111111111"
+   }
+  },
+  {
+   "id": "00000007-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-18T13:05:00.000Z",
+   "tz": -300,
+   "type": "notch.cut",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "n": "00000003-1111-4111-8111-111111111111",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000008-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-18T14:40:00.000Z",
+   "tz": -300,
+   "type": "notch.cut",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "n": "00000004-1111-4111-8111-111111111111",
+    "up": false,
+    "place": null
+   }
+  },
+  {
+   "id": "00000009-0000-4000-8000-000000000000",
+   "dev": "",
+   "at": "2026-11-18T14:40:30.000Z",
+   "tz": -300,
+   "type": "notch.pull",
+   "round": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+   "data": {
+    "n": "00000004-1111-4111-8111-111111111111"
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 1,
+   "docks": 3,
+   "calls": 0
+  },
+  "state": {
+   "active": {
+    "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    "lane": "macro",
+    "n": 3,
+    "u": 3,
+    "shadow": false,
+    "notches": [
+     {
+      "n": "00000001-1111-4111-8111-111111111111",
+      "up": true,
+      "place": {
+       "city": "JOLIET",
+       "st": "IL"
+      },
+      "breath": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"
+     },
+     {
+      "n": "00000002-1111-4111-8111-111111111111",
+      "up": true
+     },
+     {
+      "n": "00000003-1111-4111-8111-111111111111",
+      "up": true
+     }
+    ]
+   },
+   "tacks": [],
+   "cutThrough": null
+  }
+ },
+ "note": "Town test: validate with places = a set holding 'JOLIET|IL'. expect.state is a partial tree: every key shown must match; lists match by position and length."
+}

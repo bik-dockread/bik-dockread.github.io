@@ -1,0 +1,98 @@
+{
+ "name": "due: a rail with no twin on its date, 23:30 local on Oct 31 (UTC is already Nov 1): DUE",
+ "now": "2026-11-01T03:30:00.000Z",
+ "homeSeries": {},
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000000951",
+   "dev": "",
+   "at": "2026-10-01T14:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "crypto",
+    "q": "ANYBODY HERE OWN ANY CRYPTO?",
+    "say": "anybody here own any crypto?",
+    "words": [
+     "YES",
+     "NO"
+    ],
+    "twin": null,
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "2026-10-31",
+     "time_et": "",
+     "conf": "own"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000952",
+   "dev": "",
+   "at": "2026-10-02T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000953",
+   "dev": "",
+   "at": "2026-10-03T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000002",
+    "up": false,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000954",
+   "dev": "",
+   "at": "2026-10-04T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000003",
+    "up": true,
+    "place": null
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 1,
+   "docks": 3,
+   "calls": 0
+  },
+  "state": {
+   "active": {
+    "twin": null,
+    "n": 3,
+    "u": 2
+   }
+  },
+  "calc": {
+   "closing": null,
+   "due": "own",
+   "tag": {
+    "text": "DUE",
+    "lamp": true,
+    "rule": false
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

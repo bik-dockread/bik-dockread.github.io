@@ -1,0 +1,639 @@
+{
+ "name": "pending grades: UP and the print rose (1), UP and it fell (0), DOWN and it fell (1), equal (null), no twin (none)",
+ "now": "2026-09-10T12:00:00.000Z",
+ "homeSeries": {
+  "ism_new_orders": {
+   "prints": [
+    {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    },
+    {
+     "period": "2026-08",
+     "label": "AUG 2026",
+     "value": 51.2,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    }
+   ]
+  },
+  "bls_power_price": {
+   "prints": [
+    {
+     "period": "2026-06",
+     "label": "JUN 2026",
+     "value": 0.18,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    },
+    {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 0.175,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    }
+   ]
+  },
+  "bfs_applications": {
+   "prints": [
+    {
+     "period": "2026-06",
+     "label": "JUN 2026",
+     "value": 450000,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    },
+    {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 430000,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    }
+   ]
+  },
+  "btos_ai_use": {
+   "prints": [
+    {
+     "period": "202615",
+     "label": "6 JUL - 19 JUL",
+     "value": 9.5,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    },
+    {
+     "period": "202616",
+     "label": "20 JUL - 2 AUG",
+     "value": 9.5,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    }
+   ]
+  }
+ },
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000000301",
+   "dev": "",
+   "at": "2026-08-01T13:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "2026-06",
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "date": "2026-08-03",
+     "time_et": "10:00",
+     "conf": "rule"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000302",
+   "dev": "",
+   "at": "2026-08-01T14:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000303",
+   "dev": "",
+   "at": "2026-08-01T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000002",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000304",
+   "dev": "",
+   "at": "2026-08-02T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000003",
+    "up": false,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000305",
+   "dev": "",
+   "at": "2026-08-03T15:00:00.000Z",
+   "tz": -240,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000001",
+    "lane": "macro",
+    "series": "ism_new_orders",
+    "from": {
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48,
+     "by": "fetch"
+    },
+    "up": true,
+    "docks": {
+     "u": 2,
+     "n": 3
+    },
+    "inside": false
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000306",
+   "dev": "",
+   "at": "2026-08-03T15:05:00.000Z",
+   "tz": -240,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "reason": "print",
+    "print": {
+     "series": "ism_new_orders",
+     "period": "2026-07",
+     "label": "JUL 2026",
+     "value": 48,
+     "by": "fetch"
+    }
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000307",
+   "dev": "",
+   "at": "2026-08-03T15:10:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000002",
+   "data": {
+    "lane": "physics",
+    "q": "POWER BILL UP OR DOWN?",
+    "say": "power bill up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "bls_power_price",
+    "origin": "canon",
+    "aim": {
+     "after": "2026-06",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000308",
+   "dev": "",
+   "at": "2026-08-03T15:15:00.000Z",
+   "tz": -240,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000002",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000002",
+    "lane": "physics",
+    "series": "bls_power_price",
+    "from": {
+     "period": "2026-06",
+     "label": "JUN 2026",
+     "value": 0.18,
+     "by": "fetch"
+    },
+    "up": true,
+    "docks": {
+     "u": 0,
+     "n": 0
+    },
+    "inside": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000309",
+   "dev": "",
+   "at": "2026-08-03T15:20:00.000Z",
+   "tz": -240,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000002",
+   "data": {
+    "reason": "print",
+    "print": {
+     "series": "bls_power_price",
+     "period": "2026-06",
+     "label": "JUN 2026",
+     "value": 0.18,
+     "by": "fetch"
+    }
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000310",
+   "dev": "",
+   "at": "2026-08-03T15:25:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000003",
+   "data": {
+    "lane": "nextgen",
+    "q": "KNOW ANYBODY WHO STARTED A BUSINESS THIS YEAR?",
+    "say": "know anybody who started a business this year?",
+    "words": [
+     "YES",
+     "NO"
+    ],
+    "twin": "bfs_applications",
+    "origin": "canon",
+    "aim": {
+     "after": "2026-05",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000311",
+   "dev": "",
+   "at": "2026-08-03T15:30:00.000Z",
+   "tz": -240,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000003",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000003",
+    "lane": "nextgen",
+    "series": "bfs_applications",
+    "from": {
+     "period": "2026-06",
+     "label": "JUN 2026",
+     "value": 450000,
+     "by": "fetch"
+    },
+    "up": false,
+    "docks": {
+     "u": 0,
+     "n": 0
+    },
+    "inside": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000312",
+   "dev": "",
+   "at": "2026-08-03T15:35:00.000Z",
+   "tz": -240,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000003",
+   "data": {
+    "reason": "print",
+    "print": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000313",
+   "dev": "",
+   "at": "2026-08-03T15:40:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000004",
+   "data": {
+    "lane": "ai",
+    "q": "ANYBODY HERE USING AI FOR REAL?",
+    "say": "anybody here using A.I. for real?",
+    "words": [
+     "YES",
+     "NO"
+    ],
+    "twin": "btos_ai_use",
+    "origin": "canon",
+    "aim": {
+     "after": "202614",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000314",
+   "dev": "",
+   "at": "2026-08-03T15:45:00.000Z",
+   "tz": -240,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000004",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000004",
+    "lane": "ai",
+    "series": "btos_ai_use",
+    "from": {
+     "period": "202615",
+     "label": "6 JUL - 19 JUL",
+     "value": 9.5,
+     "by": "fetch"
+    },
+    "up": true,
+    "docks": {
+     "u": 0,
+     "n": 0
+    },
+    "inside": true
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000315",
+   "dev": "",
+   "at": "2026-08-03T15:50:00.000Z",
+   "tz": -240,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000004",
+   "data": {
+    "reason": "print",
+    "print": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000316",
+   "dev": "",
+   "at": "2026-08-03T15:55:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000005",
+   "data": {
+    "lane": "crypto",
+    "q": "ANYBODY HERE OWN ANY CRYPTO?",
+    "say": "anybody here own any crypto?",
+    "words": [
+     "YES",
+     "NO"
+    ],
+    "twin": null,
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "2026-09-02",
+     "time_et": "",
+     "conf": "own"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000317",
+   "dev": "",
+   "at": "2026-08-04T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000005",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000005",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000318",
+   "dev": "",
+   "at": "2026-09-02T15:00:00.000Z",
+   "tz": -240,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-000000000005",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-000000000005",
+    "lane": "crypto",
+    "series": null,
+    "from": null,
+    "up": null,
+    "docks": {
+     "u": 1,
+     "n": 1
+    },
+    "inside": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000319",
+   "dev": "",
+   "at": "2026-09-02T15:05:00.000Z",
+   "tz": -240,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000005",
+   "data": {
+    "reason": "own",
+    "print": null
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 5,
+   "docks": 4,
+   "calls": 5
+  },
+  "state": {
+   "active": null,
+   "rounds": [
+    {
+     "id": "11111111-0000-4000-8000-000000000001",
+     "closed": true,
+     "n": 3,
+     "u": 2,
+     "call": {
+      "c": "cccccccc-0000-4000-8000-000000000001",
+      "grade": null,
+      "graded": null,
+      "pending": {
+       "grade": 1,
+       "print": {
+        "period": "2026-08",
+        "value": 51.2
+       },
+       "base": {
+        "period": "2026-07",
+        "value": 48
+       }
+      }
+     }
+    },
+    {
+     "id": "11111111-0000-4000-8000-000000000002",
+     "closed": true,
+     "call": {
+      "c": "cccccccc-0000-4000-8000-000000000002",
+      "pending": {
+       "grade": 0,
+       "print": {
+        "period": "2026-07",
+        "value": 0.175
+       },
+       "base": {
+        "period": "2026-06",
+        "value": 0.18
+       }
+      }
+     }
+    },
+    {
+     "id": "11111111-0000-4000-8000-000000000003",
+     "closed": true,
+     "call": {
+      "c": "cccccccc-0000-4000-8000-000000000003",
+      "up": false,
+      "pending": {
+       "grade": 1,
+       "print": {
+        "period": "2026-07",
+        "value": 430000
+       }
+      }
+     }
+    },
+    {
+     "id": "11111111-0000-4000-8000-000000000004",
+     "closed": true,
+     "call": {
+      "c": "cccccccc-0000-4000-8000-000000000004",
+      "pending": {
+       "grade": null,
+       "print": {
+        "period": "202616",
+        "value": 9.5
+       },
+       "base": {
+        "period": "202615",
+        "value": 9.5
+       }
+      }
+     }
+    },
+    {
+     "id": "11111111-0000-4000-8000-000000000005",
+     "closed": true,
+     "close": {
+      "reason": "own",
+      "print": null
+     },
+     "n": 1,
+     "u": 1,
+     "call": {
+      "c": "cccccccc-0000-4000-8000-000000000005",
+      "up": null,
+      "pending": null
+     }
+    }
+   ],
+   "tacks": [
+    {
+     "round": "11111111-0000-4000-8000-000000000001",
+     "lane": "macro",
+     "c": "cccccccc-0000-4000-8000-000000000001",
+     "up": true,
+     "grade": null,
+     "graded": null
+    },
+    {
+     "round": "11111111-0000-4000-8000-000000000002",
+     "lane": "physics",
+     "c": "cccccccc-0000-4000-8000-000000000002",
+     "up": true,
+     "grade": null,
+     "graded": null
+    },
+    {
+     "round": "11111111-0000-4000-8000-000000000003",
+     "lane": "nextgen",
+     "c": "cccccccc-0000-4000-8000-000000000003",
+     "up": false,
+     "grade": null,
+     "graded": null
+    },
+    {
+     "round": "11111111-0000-4000-8000-000000000004",
+     "lane": "ai",
+     "c": "cccccccc-0000-4000-8000-000000000004",
+     "up": true,
+     "grade": null,
+     "graded": null
+    },
+    {
+     "round": "11111111-0000-4000-8000-000000000005",
+     "lane": "crypto",
+     "c": "cccccccc-0000-4000-8000-000000000005",
+     "up": null,
+     "grade": null,
+     "graded": null
+    }
+   ],
+   "lastClosed": "2026-09-02T15:05:00.000Z",
+   "asked": {
+    "macro": "2026-08-01T13:00:00.000Z",
+    "physics": "2026-08-03T15:10:00.000Z",
+    "nextgen": "2026-08-03T15:25:00.000Z",
+    "ai": "2026-08-03T15:40:00.000Z",
+    "crypto": "2026-08-03T15:55:00.000Z"
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

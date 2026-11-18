@@ -1,0 +1,8 @@
+# This repo is published as-is one day: keep build litter and private things out of it.
+__pycache__/
+*.pyc
+*.tmp
+*.tmp.png
+.DS_Store
+tools/out/
+tools/fake-breath.wav

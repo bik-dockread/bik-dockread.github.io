@@ -1,0 +1,85 @@
+{
+ "name": "due: the rule date (Nov 2) has passed on the local calendar and no print is in: LATE",
+ "now": "2026-11-04T15:00:00.000Z",
+ "homeSeries": {
+  "ism_new_orders": {
+   "prints": [
+    {
+     "period": "2026-09",
+     "label": "SEP 2026",
+     "value": 49,
+     "by": "fetch",
+     "source": "TEST",
+     "url": "",
+     "released": "",
+     "fetched_at": ""
+    }
+   ]
+  }
+ },
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000000901",
+   "dev": "",
+   "at": "2026-10-05T14:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "2026-09",
+     "period": "2026-10",
+     "label": "OCT 2026",
+     "date": "2026-11-02",
+     "time_et": "10:00",
+     "conf": "rule"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000000902",
+   "dev": "",
+   "at": "2026-10-06T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 1,
+   "docks": 1,
+   "calls": 0
+  },
+  "state": {
+   "active": {
+    "id": "11111111-0000-4000-8000-000000000001"
+   }
+  },
+  "calc": {
+   "closing": null,
+   "due": "late",
+   "tag": {
+    "text": "LATE",
+    "lamp": true,
+    "rule": false
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

@@ -1,0 +1,113 @@
+{
+ "name": "a skewed clock: a flip sorts two minutes before its cut and a breath five minutes before its notch; both still apply",
+ "now": "2026-10-02T12:00:00.000Z",
+ "homeSeries": {},
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000001101",
+   "dev": "PHONE-A",
+   "at": "2026-10-01T14:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001102",
+   "dev": "PHONE-A",
+   "at": "2026-10-01T15:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001103",
+   "dev": "PHONE-B",
+   "at": "2026-10-01T14:58:00.000Z",
+   "tz": -240,
+   "type": "notch.flip",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001"
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001104",
+   "dev": "PHONE-A",
+   "at": "2026-10-01T15:10:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000002",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001105",
+   "dev": "PHONE-B",
+   "at": "2026-10-01T15:05:00.000Z",
+   "tz": -240,
+   "type": "breath.kept",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "b": "bbbbbbbb-0000-4000-8000-000000000001",
+    "of": "notch",
+    "ref": "aaaaaaaa-0000-4000-8000-000000000002",
+    "ms": 2400,
+    "mime": "audio/webm"
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 1,
+   "docks": 2,
+   "calls": 0
+  },
+  "state": {
+   "active": {
+    "n": 2,
+    "u": 1,
+    "notches": [
+     {
+      "n": "aaaaaaaa-0000-4000-8000-000000000001",
+      "up": false,
+      "breath": null
+     },
+     {
+      "n": "aaaaaaaa-0000-4000-8000-000000000002",
+      "up": true,
+      "breath": "bbbbbbbb-0000-4000-8000-000000000001"
+     }
+    ]
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}

@@ -1,0 +1,141 @@
+{
+ "name": "a shadow round's call is kept on its round but makes no tack (SPEC 6.1 ruling); the open round's call does",
+ "now": "2026-10-04T12:00:00.000Z",
+ "homeSeries": {},
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000001401",
+   "dev": "PHONE-A",
+   "at": "2026-10-01T09:00:00.000Z",
+   "tz": -300,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-0000000000a1",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001402",
+   "dev": "PHONE-B",
+   "at": "2026-10-01T09:30:00.000Z",
+   "tz": -300,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-0000000000b2",
+   "data": {
+    "lane": "crypto",
+    "q": "ANYBODY HERE OWN ANY CRYPTO?",
+    "say": "anybody here own any crypto?",
+    "words": [
+     "YES",
+     "NO"
+    ],
+    "twin": null,
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "2026-10-31",
+     "time_et": "",
+     "conf": "own"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001403",
+   "dev": "PHONE-B",
+   "at": "2026-10-02T09:00:00.000Z",
+   "tz": -300,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-0000000000b2",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-0000000000b2",
+    "lane": "crypto",
+    "series": null,
+    "from": null,
+    "up": null,
+    "docks": {
+     "u": 0,
+     "n": 0
+    },
+    "inside": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001404",
+   "dev": "PHONE-A",
+   "at": "2026-10-03T09:00:00.000Z",
+   "tz": -300,
+   "type": "call.made",
+   "round": "11111111-0000-4000-8000-0000000000a1",
+   "data": {
+    "c": "cccccccc-0000-4000-8000-0000000000a1",
+    "lane": "macro",
+    "series": "ism_new_orders",
+    "from": {
+     "period": "2026-09",
+     "label": "SEP 2026",
+     "value": 55.3,
+     "by": "fetch"
+    },
+    "up": true,
+    "docks": {
+     "u": 0,
+     "n": 0
+    },
+    "inside": null
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 2,
+   "docks": 0,
+   "calls": 2
+  },
+  "state": {
+   "rounds": [
+    {
+     "id": "11111111-0000-4000-8000-0000000000a1",
+     "shadow": false
+    },
+    {
+     "id": "11111111-0000-4000-8000-0000000000b2",
+     "shadow": true,
+     "call": {
+      "c": "cccccccc-0000-4000-8000-0000000000b2"
+     }
+    }
+   ],
+   "active": {
+    "id": "11111111-0000-4000-8000-0000000000a1"
+   },
+   "tacks": [
+    {
+     "round": "11111111-0000-4000-8000-0000000000a1",
+     "lane": "macro",
+     "c": "cccccccc-0000-4000-8000-0000000000a1",
+     "up": true
+    }
+   ]
+  }
+ }
+}

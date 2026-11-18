@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "min_round_days": 7,
+  "own_round_days": 30,
+  "lanes": [
+    {"id": "ai",      "brand": "AI",       "say": "A.I."},
+    {"id": "nextgen", "brand": "NEXT-GEN", "say": "next gen"},
+    {"id": "crypto",  "brand": "CRYPTO",   "say": "crypto"},
+    {"id": "macro",   "brand": "MACRO",    "say": "macro"},
+    {"id": "physics", "brand": "PHYSICS",  "say": "physics"}
+  ],
+  "turn_order": ["macro", "ai", "nextgen", "crypto", "physics"],
+  "canon": {
+    "macro":   {"q": "ORDERS UP OR DOWN?", "say": "orders up or down?", "words": ["UP", "DOWN"], "twin": "ism_new_orders"},
+    "ai":      {"q": "ANYBODY HERE USING AI FOR REAL?", "say": "anybody here using A.I. for real?", "words": ["YES", "NO"], "twin": "btos_ai_use"},
+    "nextgen": {"q": "KNOW ANYBODY WHO STARTED A BUSINESS THIS YEAR?", "say": "know anybody who started a business this year?", "words": ["YES", "NO"], "twin": "bfs_applications"},
+    "crypto":  {"q": "ANYBODY HERE OWN ANY CRYPTO?", "say": "anybody here own any crypto?", "words": ["YES", "NO"], "twin": null},
+    "physics": {"q": "POWER BILL UP OR DOWN?", "say": "power bill up or down?", "words": ["UP", "DOWN"], "twin": "bls_power_price"}
+  },
+  "series": {
+    "ism_new_orders": {
+      "name": "ISM NEW ORDERS", "publisher": "Institute for Supply Management", "scale": "share",
+      "unit": "index", "decimals": 1, "lo": 20, "hi": 80,
+      "means": "Purchasing managers, this month against last: share saying orders rose, plus half of those saying the same. Seasonally adjusted. 50 is even.",
+      "caveat": "Theirs counts SAME as half and is adjusted for the season. Yours is UP over UP plus DOWN.",
+      "compare": "Their question, their mouths."
+    },
+    "btos_ai_use": {
+      "name": "CENSUS AI-USE RATE", "publisher": "U.S. Census Bureau", "scale": "share",
+      "unit": "percent", "decimals": 1, "lo": 0, "hi": 100,
+      "means": "Share of businesses answering yes to the Census question on using AI in the last two weeks. The exact wording is on the tag card.",
+      "caveat": "Theirs keeps DON'T KNOW in the total. Yours is YES over YES plus NO.",
+      "compare": "Their question, their mouths."
+    },
+    "bfs_applications": {
+      "name": "BUSINESS APPLICATIONS", "publisher": "U.S. Census Bureau", "scale": "level",
+      "unit": "applications", "decimals": 0, "lo": 50000, "hi": 2000000,
+      "means": "New business applications filed in the month, seasonally adjusted.",
+      "caveat": "A count, not a share. It gets no hand on the dial.",
+      "compare": "Different yardstick."
+    },
+    "bls_power_price": {
+      "name": "POWER PRICE", "publisher": "U.S. Bureau of Labor Statistics", "scale": "level",
+      "unit": "dollars per kWh", "decimals": 3, "lo": 0.03, "hi": 1.5,
+      "means": "Average price of a kilowatt-hour of electricity, U.S. city average.",
+      "caveat": "A price, not a share. It gets no hand on the dial.",
+      "compare": "Different yardstick."
+    }
+  }
+}

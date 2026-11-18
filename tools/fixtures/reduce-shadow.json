@@ -1,0 +1,176 @@
+{
+ "name": "a different question opened while one is open is a shadow: kept, never active; the next opening after the close is active",
+ "now": "2026-10-02T12:00:00.000Z",
+ "homeSeries": {},
+ "events": [
+  {
+   "id": "00000000-0000-4000-8000-000000001301",
+   "dev": "PHONE-A",
+   "at": "2026-10-01T09:00:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "lane": "macro",
+    "q": "ORDERS UP OR DOWN?",
+    "say": "orders up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "ism_new_orders",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001302",
+   "dev": "PHONE-B",
+   "at": "2026-10-01T09:30:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000002",
+   "data": {
+    "lane": "ai",
+    "q": "ANYBODY HERE USING AI FOR REAL?",
+    "say": "anybody here using A.I. for real?",
+    "words": [
+     "YES",
+     "NO"
+    ],
+    "twin": "btos_ai_use",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001303",
+   "dev": "",
+   "at": "2026-10-01T09:45:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000001",
+    "up": true,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001304",
+   "dev": "",
+   "at": "2026-10-01T10:00:00.000Z",
+   "tz": -240,
+   "type": "notch.cut",
+   "round": "11111111-0000-4000-8000-000000000002",
+   "data": {
+    "n": "aaaaaaaa-0000-4000-8000-000000000002",
+    "up": false,
+    "place": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001305",
+   "dev": "",
+   "at": "2026-10-01T12:00:00.000Z",
+   "tz": -240,
+   "type": "round.closed",
+   "round": "11111111-0000-4000-8000-000000000001",
+   "data": {
+    "reason": "print",
+    "print": null
+   }
+  },
+  {
+   "id": "00000000-0000-4000-8000-000000001306",
+   "dev": "",
+   "at": "2026-10-01T12:05:00.000Z",
+   "tz": -240,
+   "type": "round.opened",
+   "round": "11111111-0000-4000-8000-000000000003",
+   "data": {
+    "lane": "physics",
+    "q": "POWER BILL UP OR DOWN?",
+    "say": "power bill up or down?",
+    "words": [
+     "UP",
+     "DOWN"
+    ],
+    "twin": "bls_power_price",
+    "origin": "canon",
+    "aim": {
+     "after": "",
+     "period": "",
+     "label": "",
+     "date": "",
+     "time_et": "",
+     "conf": "none"
+    },
+    "from": null
+   }
+  }
+ ],
+ "expect": {
+  "summary": {
+   "rounds": 3,
+   "docks": 2,
+   "calls": 0
+  },
+  "state": {
+   "rounds": [
+    {
+     "id": "11111111-0000-4000-8000-000000000001",
+     "shadow": false,
+     "closed": true,
+     "closedAt": "2026-10-01T12:00:00.000Z",
+     "n": 1
+    },
+    {
+     "id": "11111111-0000-4000-8000-000000000002",
+     "shadow": true,
+     "closed": false,
+     "n": 1,
+     "notches": [
+      {
+       "n": "aaaaaaaa-0000-4000-8000-000000000002",
+       "up": false
+      }
+     ]
+    },
+    {
+     "id": "11111111-0000-4000-8000-000000000003",
+     "shadow": false,
+     "closed": false,
+     "n": 0
+    }
+   ],
+   "active": {
+    "id": "11111111-0000-4000-8000-000000000003",
+    "lane": "physics"
+   },
+   "lastClosed": "2026-10-01T12:00:00.000Z",
+   "asked": {
+    "macro": "2026-10-01T09:00:00.000Z",
+    "ai": "2026-10-01T09:30:00.000Z",
+    "physics": "2026-10-01T12:05:00.000Z"
+   }
+  }
+ },
+ "note": "Hand-written expectations. Town test: places = a set holding JOLIET|IL. Dates are read in America/New_York."
+}
