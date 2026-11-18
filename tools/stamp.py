@@ -6,10 +6,13 @@
 
 The stamp is the first 12 hex of a sha-256 over every precached file (its path, then its bytes), in the
 order of the list. The list is the page, the stylesheet, the six scripts, registry.json, places.json and
-the manifest, plus every file in icons/ once there is one. So any change to a shell file changes the cache
-name, and a phone updates by itself. sw.js itself is not hashed (it holds the stamp).
+the manifest, plus the icons the manifest names, in its order. So any change to a shell file changes the
+cache name, and a phone updates by itself. sw.js itself is not hashed (it holds the stamp). A stray file in
+icons/ is never listed: the worker's install is all or nothing, and a listed file the host does not have
+would keep every phone on the old version.
 """
 import hashlib
+import json
 import os
 import re
 import sys
@@ -22,20 +25,25 @@ SW = SHELL / "sw.js"
 BASE = ("./", "./index.html", "./app.css",
         "./js/core.js", "./js/store.js", "./js/geo.js", "./js/sound.js", "./js/surface.js", "./js/app.js",
         "./registry.json", "./places.json", "./manifest.webmanifest")
-ICON_EXT = (".png", ".svg", ".webp")
+ICON_RE = re.compile(r"icons/[A-Za-z0-9][A-Za-z0-9._-]*\.(?:png|svg|webp)")
 
 CACHE_RE = re.compile(r'^const CACHE = PREFIX \+ "([0-9a-f]{12})";$', re.M)
 LIST_RE = re.compile(r"^const SHELL = \[\n(?:  \"[^\"\n]+\",\n)*\];$", re.M)
 
 
 def precache():
-    """The precache list, in order: the base files, then the icons (sorted) once they exist."""
+    """The precache list, in order: the base files, then the icons the manifest names, in its order."""
     out = list(BASE)
-    icons = SHELL / "icons"
-    if icons.is_dir():
-        for p in sorted(icons.iterdir()):
-            if p.is_file() and p.suffix.lower() in ICON_EXT:
-                out.append("./icons/" + p.name)
+    try:
+        icons = json.loads((SHELL / "manifest.webmanifest").read_text(encoding="utf-8")).get("icons", [])
+    except (OSError, ValueError, AttributeError, RecursionError) as e:
+        raise ValueError("manifest.webmanifest cannot be read: " + str(e))
+    for icon in icons if isinstance(icons, list) else [None]:
+        src = icon.get("src") if isinstance(icon, dict) else None
+        if not isinstance(src, str) or not ICON_RE.fullmatch(src):
+            raise ValueError("the manifest names an icon that is not a plain file in icons/: " + repr(src))
+        if "./" + src not in out:
+            out.append("./" + src)
     return out
 
 
@@ -68,7 +76,11 @@ def main(argv):
     if argv not in ([], ["--check"]):
         print("usage: stamp.py [--check]", file=sys.stderr)
         return 2
-    paths = precache()
+    try:
+        paths = precache()
+    except ValueError as e:
+        print("stamp: " + str(e), file=sys.stderr)
+        return 1
     missing = [p for p in paths if not path_of(p).is_file()]
     if missing:
         print("stamp: precached files missing: " + ", ".join(missing), file=sys.stderr)

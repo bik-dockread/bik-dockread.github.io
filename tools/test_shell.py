@@ -8,6 +8,10 @@
   - every id a script looks up exists once in the page; every button has type and aria-label;
   - tools/mkindex.py --check and tools/stamp.py --check pass; every precached path exists; the service
     worker's rules; the manifest is the SPEC's;
+  - the three icons pass tools/make_icons.py --check, are the only files icons/ publishes, are the sizes
+    the manifest says, are the icons the worker precaches, and are what the picture renders to when the
+    picture is at hand; the check refuses each kind of bad icon and its PNG reader each kind of bad file
+    (proved on doctored copies); no file this folder publishes is an image but those three (SPEC 15.66);
   - node --check on every script; the five Node suites run and their return codes are read;
   - every row of places.json is a name, a state, two whole numbers and a radius, and every name passes the
     city rule;
@@ -23,16 +27,20 @@
 No network, no browser, nothing written outside throwaway temp folders (one repo, one pair of town files).
 Run: python3 shell/tools/test_shell.py
 """
+import base64
+import hashlib
 import importlib.util
 import json
 import os
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
 import unittest
 import zipfile
+import zlib
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -268,6 +276,14 @@ class TestPage(unittest.TestCase):
         self.assertEqual(metas.get("color-scheme"), "dark")
         self.assertEqual(metas.get("referrer"), "no-referrer")
 
+    def test_the_page_links_its_icons(self):
+        links = {" ".join(a.get("rel", "").split()): a.get("href") for t, a, _ in tags() if t == "link"}
+        self.assertEqual(links.get("icon"), "icons/icon-192.png")
+        self.assertEqual(links.get("apple-touch-icon"), "icons/icon-maskable-512.png", "full bleed: a phone rounds it itself")
+        self.assertEqual(links.get("manifest"), "manifest.webmanifest")
+        for rel, href in links.items():
+            self.assertTrue((SHELL / href).is_file(), f"the page links {rel} to {href}, which is missing")
+
     def test_no_forbidden_sinks_in_any_shell_file(self):
         for f in shell_files():
             text = f.read_text(encoding="utf-8")
@@ -363,9 +379,39 @@ class TestWorker(unittest.TestCase):
         self.assertEqual(paths[:len(want)], want, "the SPEC's precache list, in order")
         for p in paths[len(want):]:
             self.assertTrue(p.startswith("./icons/"), f"only icons may follow: {p}")
+        m = json.loads((SHELL / "manifest.webmanifest").read_text(encoding="utf-8"))
+        self.assertEqual(paths[len(want):], ["./" + i["src"] for i in m["icons"]], "the icons the manifest names, in its order")
         for p in paths:
             f = SHELL / ("index.html" if p == "./" else p[2:])
             self.assertTrue(f.is_file(), f"precached {p} is missing")
+
+    def test_stamp_lists_the_manifest_icons_and_no_stray_file(self):
+        # The worker's install is all or nothing. A leftover in icons/ that git ignores must never be listed:
+        # the host would not have it, and every phone would stay on the old version.
+        spec = importlib.util.spec_from_file_location("stamp", TOOLS / "stamp.py")
+        st = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(st)
+        with tempfile.TemporaryDirectory(prefix="dockread-stamp-") as tmp:
+            st.SHELL = Path(tmp)
+            Path(tmp, "icons").mkdir()
+            for stray in ("a.png", "b.png", "a.tmp.png", ".DS_Store", "old.webp"):
+                Path(tmp, "icons", stray).write_bytes(b"x")
+            def manifest(icons):
+                Path(tmp, "manifest.webmanifest").write_text(json.dumps({"name": "x", "icons": icons}), encoding="utf-8")
+            manifest([{"src": "icons/b.png"}, {"src": "icons/a.png"}, {"src": "icons/b.png"}])
+            self.assertEqual(st.precache(), list(st.BASE) + ["./icons/b.png", "./icons/a.png"])
+            manifest([])
+            self.assertEqual(st.precache(), list(st.BASE))
+            for bad in ([{"src": "../a.png"}], [{"src": "icons/../a.png"}], [{"src": "/icons/a.png"}],
+                        [{"src": "https://example.com/icons/a.png"}], [{"src": "icons/sub/a.png"}], [{"src": "icons/a.gif"}],
+                        [{"src": "icons/.hidden.png"}], [{"sizes": "1x1"}], ["icons/a.png"], {"src": "icons/a.png"}):
+                manifest(bad)
+                with self.assertRaises(ValueError, msg=repr(bad)):
+                    st.precache()
+            for text in ("{not json", '{"icons": ' + "[" * 200000 + "]" * 200000 + "}", "[]", "null"):
+                Path(tmp, "manifest.webmanifest").write_text(text, encoding="utf-8")
+                with self.assertRaises(ValueError, msg=text[:20]):
+                    st.precache()
 
     def test_worker_rules(self):
         self.assertIn('const PREFIX = "dockread-shell-";', SW)
@@ -395,7 +441,12 @@ class TestWorker(unittest.TestCase):
             "id": "/", "name": "Dock Read", "short_name": "Dock Read",
             "description": "Ask the dock. Read the economy.", "start_url": "./", "scope": "./",
             "display": "standalone", "orientation": "portrait",
-            "background_color": "#0D0B09", "theme_color": "#0D0B09", "icons": [],
+            "background_color": "#0D0B09", "theme_color": "#0D0B09",
+            "icons": [
+                {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+                {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+                {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+            ],
         })
 
 
@@ -719,6 +770,456 @@ class TestMkplaces(unittest.TestCase):
         rows = json.loads(text)["rows"]
         self.assertEqual([r for r in rows if r[1] == "PR"], [])
         self.assertEqual(len({r[1] for r in rows}), 51, "the 50 states and DC")
+
+
+def load_make_icons():
+    spec = importlib.util.spec_from_file_location("make_icons", TOOLS / "make_icons.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def chunks(*parts):
+    """A PNG from (tag, body) pairs: the signature, then each chunk with its length and CRC."""
+    out = b"\x89PNG\r\n\x1a\n"
+    for tag, body in parts:
+        out += struct.pack(">I", len(body)) + tag + body + struct.pack(">I", zlib.crc32(tag + body) & 0xFFFFFFFF)
+    return out
+
+
+def ihdr(w, h, depth=8, ctype=6, packing=0, filtering=0, interlace=0):
+    return (b"IHDR", struct.pack(">IIBBBBB", w, h, depth, ctype, packing, filtering, interlace))
+
+
+def filtered(rows, kinds=(0,)):
+    """The rows as a PNG's raw pixel stream, row y written with filter kinds[y % len(kinds)] (0 to 4)."""
+    out, prev = bytearray(), bytes(len(rows[0]))
+    for y, row in enumerate(rows):
+        row, f = bytes(row), kinds[y % len(kinds)]
+        line = bytearray(len(row))
+        for i, v in enumerate(row):
+            left = row[i - 4] if i >= 4 else 0
+            up = prev[i]
+            corner = prev[i - 4] if i >= 4 else 0
+            if f == 1:
+                guess = left
+            elif f == 2:
+                guess = up
+            elif f == 3:
+                guess = (left + up) // 2
+            elif f == 4:
+                est = left + up - corner
+                dl, du, dc = abs(est - left), abs(est - up), abs(est - corner)
+                guess = left if dl <= du and dl <= dc else up if du <= dc else corner
+            else:
+                guess = 0
+            line[i] = (v - guess) & 0xFF
+        out += bytes([f]) + line
+        prev = row
+    return bytes(out)
+
+
+def png(rows, extra=(), kinds=(0,)):
+    """A plain 8-bit RGBA PNG from rows of RGBA bytes; `extra` is (tag, body) chunks put before IEND."""
+    return chunks(ihdr(len(rows[0]) // 4, len(rows)), (b"IDAT", zlib.compress(filtered(rows, kinds), 6)), *extra, (b"IEND", b""))
+
+
+def resampled(rows, size, k=1.0, dx=0, fill=None):
+    """`rows` redrawn at `size` (nearest pixel), grown k times about the middle and slid dx px right.
+
+    A place that falls outside the source takes `fill`, or wraps round when fill is None.
+    """
+    n = len(rows)
+    out = []
+    for y in range(size):
+        sy = int(n / 2 + ((y + 0.5) - size / 2) * n / (size * k))
+        line = bytearray()
+        for x in range(size):
+            sx = int(n / 2 + ((x + 0.5 - dx) - size / 2) * n / (size * k))
+            if fill is None:
+                line += rows[sy % n][(sx % n) * 4:(sx % n) * 4 + 4]
+            elif 0 <= sx < n and 0 <= sy < n:
+                line += rows[sy][sx * 4:sx * 4 + 4]
+            else:
+                line += fill
+        out.append(line)
+    return out
+
+
+IMAGE_SUFFIXES = (".png", ".jpg", ".jpeg", ".jpe", ".jfif", ".webp", ".gif", ".bmp", ".tif", ".tiff", ".heic", ".heif",
+                  ".avif", ".svg", ".ico", ".icns", ".psd", ".pdf", ".jp2", ".jxl", ".raw", ".dng")
+IMAGE_STARTS = (b"\x89PNG", b"\xff\xd8\xff", b"GIF8", b"BM", b"II*\x00", b"MM\x00*", b"8BPS", b"%PDF", b"\x00\x00\x01\x00",
+                b"\xff\x0a", b"\x00\x00\x00\x0cjP  ", b"\x00\x00\x00\x0cJXL ")
+
+
+def looks_like_an_image(path):
+    """By its name or by its first bytes: a picture in any common format, whatever it is called."""
+    path = Path(path)
+    if path.suffix.lower() in IMAGE_SUFFIXES:
+        return True
+    with open(path, "rb") as f:
+        head = f.read(4096)
+    if head.startswith(IMAGE_STARTS):
+        return True
+    if head[:4] == b"RIFF" and head[8:12] == b"WEBP":
+        return True
+    if head[4:8] == b"ftyp":                      # HEIC, AVIF and their kin
+        return True
+    return b"<svg" in head.lower()                # an SVG, wherever its opening tag comes after the preamble
+
+
+def b64(start):
+    return re.escape(base64.b64encode(start).decode("ascii"))
+
+
+# A picture pasted into a text file: a data address, or the opening of a PNG, JPEG, GIF or WebP in base64.
+# Built here, never spelled out, so this file does not hold what it looks for.
+EMBEDDED = [re.compile(p) for p in (
+    "data:" + "image/",
+    b64(b"\x89PNG\r\n\x1a\n\x00")[:10],
+    b64(b"\xff\xd8\xff") + "[A-Za-z0-9+/]{24}",
+    b64(b"GIF89a"), b64(b"GIF87a"),
+    b64(b"RIF") + "[A-Za-z0-9+/]{8}" + b64(b"EBP"))]
+
+
+class TestIcons(unittest.TestCase):
+    """SPEC 9.10 and 15.66: three icons cut from one picture; the check reads them back, and it has teeth."""
+    NAVY = bytes((8, 26, 67, 255))
+    PAPER = bytes((225, 225, 232, 255))            # the picture's pale background
+
+    @classmethod
+    def setUpClass(cls):
+        cls.mi = load_make_icons()
+        cls.names = [name for name, _, _ in cls.mi.JOBS]
+        cls.shipped = {}
+        for name, size, maskable in cls.mi.JOBS:
+            w, h, rows, _ = cls.mi.decode_png((SHELL / "icons" / name).read_bytes())
+            assert (w, h) == (size, size), name
+            cls.shipped[name] = rows
+        cls.n = 192
+        cls.tile = [bytearray(r) for r in cls.shipped["icon-192.png"]]
+        cls.full = resampled(cls.shipped["icon-maskable-512.png"], cls.n)
+
+    def judge(self, rows, maskable, size=None, extra=()):
+        return self.mi.judge("icon", size or len(rows), maskable, png(rows, extra))
+
+    def refused(self, rows, maskable, words, **more):
+        problems = self.judge(rows, maskable, **more)
+        self.assertTrue(any(words in p for p in problems), f"wanted a refusal saying {words!r}, got {problems}")
+
+    def refused_file(self, data, words, size=192, maskable=False):
+        problems = self.mi.judge("icon", size, maskable, data)
+        self.assertEqual(len(problems), 1, problems)
+        self.assertIn(words, problems[0])
+
+    def copy(self, rows):
+        return [bytearray(r) for r in rows]
+
+    def in_circle(self, x, y, share):
+        c = self.n / 2
+        return (x + 0.5 - c) ** 2 + (y + 0.5 - c) ** 2 <= (share * self.n) ** 2
+
+    def test_check_passes_and_only_the_three_ship(self):
+        r = subprocess.run([PY, str(TOOLS / "make_icons.py"), "--check"], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        # what icons/ would publish: a file git ignores (Finder's litter, a half-written render) is not in this list
+        shipped = sorted(p for p in public_files() if p.startswith("icons/"))
+        self.assertEqual(shipped, sorted("icons/" + name for name in self.names), "icons/ publishes the three icons and nothing else")
+
+    def test_a_missing_icon_is_refused(self):
+        with tempfile.TemporaryDirectory(prefix="dockread-icons-") as tmp:
+            Path(tmp, self.names[0]).write_bytes((SHELL / "icons" / self.names[0]).read_bytes())
+            r = subprocess.run([PY, "-c", "import sys, pathlib, importlib.util as u\n"
+                                "s = u.spec_from_file_location('make_icons', sys.argv[1]); m = u.module_from_spec(s)\n"
+                                "s.loader.exec_module(m); m.check(pathlib.Path(sys.argv[2]))",
+                                str(TOOLS / "make_icons.py"), tmp], capture_output=True, text=True, timeout=120)
+        self.assertEqual(r.returncode, 1, r.stderr)
+        self.assertNotIn(self.names[0] + ": missing", r.stderr)
+        for name in self.names[1:]:
+            self.assertIn(name + ": missing", r.stderr)
+
+    def test_each_icon_is_the_size_the_manifest_says(self):
+        m = json.loads((SHELL / "manifest.webmanifest").read_text(encoding="utf-8"))
+        self.assertEqual(sorted(i["src"] for i in m["icons"]), sorted("icons/" + name for name in self.names))
+        for i in m["icons"]:
+            rows = self.shipped[i["src"].split("/")[1]]
+            self.assertEqual(f"{len(rows[0]) // 4}x{len(rows)}", i["sizes"], i["src"])
+            self.assertEqual((SHELL / i["src"]).read_bytes()[:8], b"\x89PNG\r\n\x1a\n", i["src"])
+
+    def test_the_controls_pass(self):
+        # every doctored copy below starts from one of these two, so each must be clean before it is spoiled
+        self.assertEqual(self.judge(self.tile, False), [])
+        self.assertEqual(self.judge(self.full, True), [])
+
+    def test_the_reader_undoes_every_filter(self):
+        rows = [bytes(r) for r in self.tile]
+        for kinds in ((0,), (1,), (2,), (3,), (4,), (4, 3, 2, 1, 0)):
+            w, h, back, tags = self.mi.decode_png(png(rows, kinds=kinds))
+            self.assertEqual((w, h), (192, 192))
+            self.assertEqual(back, rows, f"filters {kinds}")
+            self.assertEqual(tags, [b"IHDR", b"IDAT", b"IEND"])
+        # the pixel stream may come in several IDAT chunks, an empty one among them
+        raw = zlib.compress(filtered(rows, (4, 1)), 6)
+        parts = [(b"IDAT", raw[:100]), (b"IDAT", b""), (b"IDAT", raw[100:5000]), (b"IDAT", raw[5000:])]
+        self.assertEqual(self.mi.decode_png(chunks(ihdr(192, 192), *parts, (b"IEND", b"")))[2], rows)
+
+    def test_a_wrong_size_or_a_broken_file_is_refused(self):
+        rows = [bytes(r) for r in self.tile]
+        good, raw = png(rows), zlib.compress(filtered(rows), 6)
+        idat, end = (b"IDAT", raw), (b"IEND", b"")
+        self.refused(self.tile, False, "is 192x192, not 512x512", size=512)
+        self.refused_file(b"GIF89a" + bytes(40), "not a PNG")
+        self.refused_file(b"", "not a PNG")
+        flipped = bytearray(good)
+        flipped[len(flipped) // 2] ^= 0x55
+        self.refused_file(bytes(flipped), "CRC")
+        self.refused_file(good[:-20], "cut short")
+        self.refused_file(good[:-6], "cut short")
+        self.refused_file(good + b"extra", "after IEND")
+        self.refused_file(chunks(ihdr(192, 192), idat), "no IEND")
+        self.refused_file(chunks(ihdr(192, 192), idat, (b"IEND", b"x")), "bad IEND")
+        self.refused_file(chunks(idat, ihdr(192, 192), end), "no IHDR first")
+        self.refused_file(chunks(idat, end), "no IHDR first")
+        self.refused_file(chunks(ihdr(192, 192), ihdr(192, 192), idat, end), "bad IHDR")
+        self.refused_file(chunks((b"IHDR", ihdr(192, 192)[1][:12]), idat, end), "bad IHDR")
+        for odd in (dict(ctype=2), dict(ctype=4), dict(depth=16), dict(interlace=1), dict(packing=1), dict(filtering=1)):
+            self.refused_file(chunks(ihdr(192, 192, **odd), idat, end), "not a plain 8-bit RGBA PNG")
+        # the pixel stream: too short, too long, with bytes after its end, with a row whose filter is unknown, broken
+        short = (b"IDAT", zlib.compress(filtered(rows[:-1]), 6))
+        long = (b"IDAT", zlib.compress(filtered(rows + rows[:1]), 6))
+        self.refused_file(chunks(ihdr(192, 192), short, end), "wrong length")
+        self.refused_file(chunks(ihdr(192, 192), long, end), "wrong length")
+        self.refused_file(chunks(ihdr(192, 192), (b"IDAT", raw + b"more"), end), "wrong length")
+        self.refused_file(chunks(ihdr(192, 192), (b"IDAT", b""), end), "wrong length")
+        odd_row = bytearray(filtered(rows))
+        odd_row[0] = 5
+        self.refused_file(chunks(ihdr(192, 192), (b"IDAT", zlib.compress(bytes(odd_row), 6)), end), "unknown filter")
+        broken = bytearray(raw)
+        broken[len(broken) // 2] ^= 0xFF
+        self.assertEqual(len(self.mi.judge("icon", 192, False, chunks(ihdr(192, 192), (b"IDAT", bytes(broken)), end))), 1)
+        # a picture too big to be an icon is refused from its header, before a pixel is unpacked
+        with self.assertRaisesRegex(ValueError, "unreasonable size"):
+            self.mi.decode_png(chunks(ihdr(5000, 1), idat, end))
+        bomb = (b"IDAT", zlib.compress(bytes(40_000_000), 9))
+        self.refused_file(chunks(ihdr(192, 192), bomb, end), "wrong length")
+
+    def test_anything_but_pixels_is_refused(self):
+        self.refused(self.tile, False, "ships pixels and nothing else", extra=[(b"tEXt", b"Comment\0made on a desk")])
+        self.refused(self.full, True, "ships pixels and nothing else", extra=[(b"eXIf", b"II*\0" + bytes(8))])
+
+    def test_a_tile_is_clear_outside_its_outline_solid_inside_and_keeps_its_rim(self):
+        rows = self.copy(self.tile)
+        rows[0][0:4] = self.NAVY
+        self.refused(rows, False, "corners must be clear")
+        # the four corner pixels alone prove nothing: a tile on a solid pale square, those four cut clear, is refused
+        rows = self.copy(self.tile)
+        last = self.n - 1
+        for y in range(self.n):
+            for x in range(self.n):
+                if not rows[y][x * 4 + 3] and (x, y) not in ((0, 0), (0, last), (last, 0), (last, last)):
+                    rows[y][x * 4:x * 4 + 4] = self.PAPER
+        self.refused(rows, False, "corners must be clear")
+        rows = self.copy(self.tile)
+        m = self.n // 2
+        rows[m][m * 4 + 3] = 0
+        self.refused(rows, False, "the tile must be solid")
+        band = round(self.n * self.mi.RIM_BAND)
+        for side in ("left", "right", "top", "bottom"):
+            rows = self.copy(self.tile)
+            for y in range(self.n):
+                for x in range(self.n):
+                    edge = {"left": x, "right": self.n - 1 - x, "top": y, "bottom": self.n - 1 - y}[side]
+                    if edge < band and rows[y][x * 4 + 3]:
+                        rows[y][x * 4:x * 4 + 3] = self.NAVY[:3]
+            self.refused(rows, False, f"no rim along the tile's {side} edge")
+
+    def test_a_tile_holds_none_of_the_pictures_pale_background(self):
+        # a pale fringe: every soft pixel of the edge made solid paper
+        rows = self.copy(self.tile)
+        for y in range(self.n):
+            for x in range(self.n):
+                if 0 < rows[y][x * 4 + 3] < 255:
+                    rows[y][x * 4:x * 4 + 4] = self.PAPER
+        self.refused(rows, False, "pale pixels along the tile's edge")
+        # a cut made too wide: the tile drawn a little small, paper showing inside the outline all round
+        self.refused(resampled(self.tile, self.n, k=0.96, fill=self.PAPER), False, "pale pixels along the tile's edge")
+        self.refused(resampled(self.tile, self.n, k=0.92, fill=self.PAPER), False, "pale pixels along the tile's edge")
+
+    def test_the_brain_must_be_there_blue_big_and_in_the_middle(self):
+        for base, maskable in ((self.tile, False), (self.full, True)):
+            rows = self.copy(base)
+            for y in range(self.n):
+                for x in range(self.n):
+                    if self.in_circle(x, y, self.mi.SAFE_RADIUS):
+                        rows[y][x * 4:x * 4 + 3] = self.NAVY[:3]
+            self.refused(rows, maskable, "the brain is missing")
+            grey, green = self.copy(base), self.copy(base)
+            for y in range(self.n):
+                for x in range(self.n):
+                    r, g, b = base[y][x * 4:x * 4 + 3]
+                    if b >= self.mi.LIGHT:
+                        grey[y][x * 4:x * 4 + 3] = bytes((b, b, b))
+                    green[y][x * 4:x * 4 + 3] = bytes((r, b, g))
+            self.refused(grey, maskable, "is not blue")
+            self.refused(green, maskable, "is not blue")
+            # only the brain's core left: everything between a quarter of the side and the safe circle wiped
+            rows = self.copy(base)
+            for y in range(self.n):
+                for x in range(self.n):
+                    if self.in_circle(x, y, self.mi.SAFE_RADIUS) and not self.in_circle(x, y, 0.25):
+                        rows[y][x * 4:x * 4 + 3] = self.NAVY[:3]
+            problems = self.judge(rows, maskable)
+            self.assertEqual(len(problems), 1, problems)
+            self.assertIn("the brain is too small", problems[0])
+            # the brain slid a sixth of the side to the right inside the safe circle; the tile around it untouched
+            rows, dx = self.copy(base), round(self.n * 0.16)
+            for y in range(self.n):
+                for x in range(self.n):
+                    if self.in_circle(x, y, self.mi.SAFE_RADIUS):
+                        src = base[y][(x - dx) * 4:(x - dx) * 4 + 3] if self.in_circle(x - dx, y, self.mi.SAFE_RADIUS) else self.NAVY[:3]
+                        rows[y][x * 4:x * 4 + 3] = src
+            self.refused(rows, maskable, "off the middle")
+        self.refused(resampled(self.full, self.n, k=0.8, fill=self.NAVY), True, "the brain is too small")
+        self.refused(resampled(self.full, self.n, dx=round(self.n * 0.12)), True, "off the middle")
+
+    def test_full_bleed_means_no_gap_no_rim_and_the_brain_inside_the_safe_circle(self):
+        rows = self.copy(self.full)
+        rows[3][3 * 4 + 3] = 254
+        self.refused(rows, True, "see-through")
+        rows = self.copy(self.full)
+        for x in range(self.n):
+            rows[1][x * 4:x * 4 + 3] = bytes((200, 220, 240))
+        self.refused(rows, True, "the rim is still in it")
+        # the rim's faint inner line, a few px in from the top: not light, but brighter than the plain panel
+        rows = self.copy(self.full)
+        for x in range(self.n):
+            rows[4][x * 4:x * 4 + 3] = bytes((70, 115, 146))
+        self.assertLess(146, self.mi.LIGHT)
+        self.refused(rows, True, "the rim is still in it")
+        # a band at one edge that is neither light nor bright, but is not the panel either: black, grey, dark red
+        for colour in ((0, 0, 0), (75, 75, 75), (120, 20, 20)):
+            rows = self.copy(self.full)
+            for y in range(self.n):
+                for x in range(8):
+                    rows[y][x * 4:x * 4 + 3] = bytes(colour)
+            self.refused(rows, True, "not the panel's blue")
+        # the tile itself is no full-bleed icon: its corners are clear and its rim is at the edge
+        self.refused(self.tile, True, "see-through")
+        self.refused(self.tile, True, "the rim is still in it")
+        # grown by a tenth, the brain's own lines cross the circle a launcher may cut to
+        self.assertGreater(self.mi.FIT * 1.1, self.mi.SAFE_RADIUS)
+        self.refused(resampled(self.full, self.n, k=1.1), True, "past the safe circle")
+        # a sparkle past the circle is not the brain, and is let through
+        rows = self.copy(self.full)
+        at = round(self.n * 0.44 / 2 ** 0.5)          # up and to the right, clear of the edge band
+        for y in range(self.n // 2 - at - 3, self.n // 2 - at + 3):
+            for x in range(self.n // 2 + at - 3, self.n // 2 + at + 3):
+                self.assertFalse(self.in_circle(x, y, self.mi.SAFE_RADIUS))
+                rows[y][x * 4:x * 4 + 3] = bytes((120, 230, 255))
+        self.assertEqual(self.judge(rows, True), [])
+        # the same small patch in the picture's pale grey is no sparkle: it is background that got in
+        edge = round(self.n * self.mi.BORDER)
+        rows = self.copy(self.full)
+        for y in range(edge + 8, edge + 16):
+            for x in range(edge + 8, edge + 16):
+                self.assertFalse(self.in_circle(x, y, self.mi.SAFE_RADIUS))
+                rows[y][x * 4:x * 4 + 3] = bytes((200, 200, 208))
+        problems = self.judge(rows, True)
+        self.assertEqual(len(problems), 1, problems)
+        self.assertIn("pale pixels outside the safe circle", problems[0])
+
+    def test_the_brain_fits_the_safe_circle_by_measure(self):
+        self.assertLessEqual(self.mi.FIT, 0.39, "the brain's lines stop short of the safe circle")
+        self.assertEqual(self.mi.SAFE_RADIUS, 0.40, "the web's rule for a maskable icon")
+        brain = self.mi.light_shapes(self.shipped["icon-maskable-512.png"], 512)[0]
+        self.assertGreater(brain["n"], 20000, "the biggest light shape is the brain")
+        self.assertLessEqual(brain["reach"], (self.mi.FIT + 0.005) * 512, "the brain reaches FIT of the side, to the pixel")
+        self.assertGreater(brain["reach"], (self.mi.FIT - 0.02) * 512, "and it fills the circle it was fitted to")
+
+    def test_the_shipped_icons_are_what_the_picture_renders_to(self):
+        # This is what ties the icons to the picture: the check alone cannot tell one blue brain from another.
+        if not self.mi.PICTURE.is_file():
+            self.skipTest("the picture is not in this checkout")
+        try:
+            import numpy  # noqa: F401
+            import PIL  # noqa: F401
+        except ImportError:
+            self.skipTest("PIL and numpy are not here")
+        with tempfile.TemporaryDirectory(prefix="dockread-icons-") as tmp:
+            r = subprocess.run([PY, "-c", "import sys, pathlib, importlib.util as u\n"
+                                "s = u.spec_from_file_location('make_icons', sys.argv[1]); m = u.module_from_spec(s)\n"
+                                "s.loader.exec_module(m); m.render(pathlib.Path(sys.argv[2]))",
+                                str(TOOLS / "make_icons.py"), tmp], capture_output=True, text=True, timeout=300)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual(sorted(p.name for p in Path(tmp).iterdir()), sorted(self.names), "a render leaves the three icons and no litter")
+            for name, size, _ in self.mi.JOBS:
+                _, _, rows, _ = self.mi.decode_png(Path(tmp, name).read_bytes())
+                worst = max(abs(a - b) for new, old in zip(rows, self.shipped[name]) for a, b in zip(new, old))
+                self.assertLessEqual(worst, 3, f"{name} is not what the picture renders to: run make_icons.py --render")
+
+    def test_render_refuses_another_picture(self):
+        with tempfile.TemporaryDirectory(prefix="dockread-icons-") as tmp:
+            other = Path(tmp, "other.jpeg")
+            other.write_bytes(b"not the picture")
+            code = ("import sys, pathlib, importlib.util as u\n"
+                    "s = u.spec_from_file_location('make_icons', sys.argv[1]); m = u.module_from_spec(s)\n"
+                    "s.loader.exec_module(m); m.PICTURE = pathlib.Path(sys.argv[2]); m.render(pathlib.Path(sys.argv[3]))")
+            out = Path(tmp, "out")
+            r = subprocess.run([PY, "-c", code, str(TOOLS / "make_icons.py"), str(other), str(out)],
+                               capture_output=True, text=True, timeout=120)
+            self.assertEqual(r.returncode, 1, r.stderr)
+            self.assertIn("not the picture these numbers were measured on", r.stderr)
+            r = subprocess.run([PY, "-c", code, str(TOOLS / "make_icons.py"), str(Path(tmp, "none.jpeg")), str(out)],
+                               capture_output=True, text=True, timeout=120)
+            self.assertEqual(r.returncode, 1, r.stderr)
+            self.assertIn("is missing", r.stderr)
+            self.assertFalse(out.exists(), "a refused render writes nothing")
+
+    def test_what_counts_as_an_image(self):
+        with tempfile.TemporaryDirectory(prefix="dockread-icons-") as tmp:
+            def made(name, data):
+                Path(tmp, name).write_bytes(data)
+                return Path(tmp, name)
+            self.assertTrue(looks_like_an_image(made("art.dat", png([bytes(4)]))), "a PNG under another name")
+            self.assertTrue(looks_like_an_image(made("notes.txt", b"\xff\xd8\xff\xe0" + bytes(20))), "a JPEG under another name")
+            self.assertTrue(looks_like_an_image(made("a.bin", b"RIFF" + bytes(4) + b"WEBPVP8 ")), "a WebP")
+            self.assertTrue(looks_like_an_image(made("b.bin", bytes(4) + b"ftypheic" + bytes(8))), "an HEIC")
+            self.assertTrue(looks_like_an_image(made("c.xml", b"<?xml version='1.0'?>\n<svg xmlns='x'></svg>")), "an SVG")
+            self.assertTrue(looks_like_an_image(made("empty.webp", b"")), "by its name alone")
+            self.assertTrue(looks_like_an_image(made("BRAIN.JPEG", b"")), "whatever the case")
+            late = b"<?xml version='1.0'?>\n<!-- " + b"drawn by hand " * 40 + b"-->\n<SVG xmlns='x'></SVG>"
+            self.assertTrue(looks_like_an_image(made("d.dat", late)), "an SVG whose tag comes after a long preamble")
+            self.assertFalse(looks_like_an_image(made("tool.py", b"print('hello')\n")))
+            self.assertFalse(looks_like_an_image(made("list.json", b'{"rows": []}')))
+            self.assertFalse(looks_like_an_image(made("none", b"")))
+        # a picture pasted into a text file
+        one = png([bytes(4)])
+        for name, text in (("a data address", "url(" + "data:" + "image/png;base64,AAAA)"),
+                           ("a PNG in base64", "x = '" + base64.b64encode(one).decode() + "'"),
+                           ("a JPEG in base64", base64.b64encode(b"\xff\xd8\xff\xe0" + bytes(60)).decode()),
+                           ("a GIF in base64", base64.b64encode(b"GIF89a" + bytes(30)).decode()),
+                           ("a WebP in base64", base64.b64encode(b"RIFF" + bytes(4) + b"WEBPVP8 " + bytes(20)).decode())):
+            self.assertTrue(any(rx.search(text) for rx in EMBEDDED), name)
+        for name, text in (("plain words", "the 9j/ road and a data: address with no picture"),
+                           ("this file's own rules", "data:" + " image/ spelled apart")):
+            self.assertFalse(any(rx.search(text) for rx in EMBEDDED), name)
+
+    def test_no_public_file_is_an_image_but_the_three_icons(self):
+        # The icons are published; the picture they were cut from is not (SPEC 15.66). A copy of it saved in
+        # another format would get past a hash, so no image at all is let in beside the icons, and each icon
+        # is held to its small size by the check.
+        images, pasted = [], []
+        for rel in public_files():
+            path = SHELL / rel
+            if path.is_file():
+                data = path.read_bytes()
+                self.assertNotEqual(hashlib.sha256(data).hexdigest(), self.mi.PICTURE_SHA256, rel)
+                if looks_like_an_image(path):
+                    images.append(rel)
+                elif any(rx.search(data.decode("utf-8", "replace")) for rx in EMBEDDED):
+                    pasted.append(rel)
+        self.assertEqual(sorted(images), sorted("icons/" + name for name in self.names), "the only images this folder publishes")
+        self.assertEqual(pasted, [], "files with a picture pasted in as text")
 
 
 class TestPublic(unittest.TestCase):

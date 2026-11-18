@@ -16,7 +16,7 @@
      stored under its plain address, the one the page asks for;
    - install is all or nothing: one missed file fails it, and the old version stays whole and live. */
 const PREFIX = "dockread-shell-";
-const CACHE = PREFIX + "8feff3fc44b6";
+const CACHE = PREFIX + "c079f6c7b2ee";
 const SHELL = [
   "./",
   "./index.html",
@@ -30,6 +30,9 @@ const SHELL = [
   "./registry.json",
   "./places.json",
   "./manifest.webmanifest",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/icon-maskable-512.png",
 ];
 
 self.addEventListener("install", e => {

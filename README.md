@@ -17,6 +17,8 @@ fetches the official numbers. The page reaches it only through a connect link.
   (`tools/walk.mjs`, `tools/walk2.mjs`) also need the home service.
 - The town list `places.json` is built by `tools/mkplaces.py` from the U.S. Census Bureau's 2026 Gazetteer
   Places file, which is public domain. A place is a town and a state, never more.
-- There is no icon yet.
+- The three icons in `icons/` are cut from one picture by `tools/make_icons.py`, never drawn. The picture
+  is not in this repo, so `--render` works only where it is; `--check` reads the shipped icons back and
+  needs nothing but Python.
 
 Never put in this folder: a key, a connect link, a coordinate, or anyone's words.

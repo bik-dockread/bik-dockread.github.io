@@ -33,7 +33,8 @@ TEMPLATE = """<!doctype html>
 <meta name="color-scheme" content="dark">
 <title>Dock Read</title>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="data:,">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-maskable-512.png">
 <link rel="stylesheet" href="app.css">
 {scripts}
 </head>
